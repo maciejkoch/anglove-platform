@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Login
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  Login page
+  <form [formGroup]="form" (ngSubmit)="login(form.value)">
+    <ion-item>
+      <ion-input required type="text" placeholder="Login" formControlName="email"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input required type="password" placeholder="Password" formControlName="password"></ion-input>
+    </ion-item>
+    <ion-button type="submit" [disabled]="!form.valid">Login</ion-button>
+  </form>
+  <span *ngIf="authenticationFailed"> Wrong login or password</span>
+  
+</ion-content>

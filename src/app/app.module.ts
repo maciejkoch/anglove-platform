@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, RouteReuseStrategy, Routes } from '@angular/router';
+import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -12,6 +12,8 @@ import { environment } from '../environments/environment';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AuthenticationGuardService } from './authentication/authentication-guard.service';
+import { AuthenticationService } from './authentication/authentication.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +28,9 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    AuthenticationGuardService,
+    AuthenticationService
   ],
   bootstrap: [AppComponent]
 })

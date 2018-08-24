@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthenticationGuardService } from './authentication/authentication-guard.service';
 
 const routes: Routes = [
   {
@@ -9,11 +10,17 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
+    loadChildren: './home/home.module#HomePageModule',
+    canActivate: [AuthenticationGuardService]
+  },
+  {
+    path: 'login',
+    loadChildren: './login/login.module#LoginPageModule'
   },
   {
     path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
+    loadChildren: './list/list.module#ListPageModule',
+    canActivate: [AuthenticationGuardService]
   }
 ];
 
