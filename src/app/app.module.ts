@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore';
 import { AuthenticationGuardService } from './authentication/authentication-guard.service';
 import { AuthenticationService } from './authentication/authentication.service';
 
@@ -23,12 +24,14 @@ import { AuthenticationService } from './authentication/authentication.service';
     IonicModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    AngularFirestoreModule.enablePersistence(),
     AppRoutingModule
   ],
   providers: [
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    AngularFirestore,
     AuthenticationGuardService,
     AuthenticationService
   ],
