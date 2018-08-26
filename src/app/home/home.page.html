@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-card *ngFor="let item of items | async">
+  <ion-card *ngFor="let item of items | async" (click)="navigate(item)"> 
     <h1>{{ item.title }}</h1>
   </ion-card>
 

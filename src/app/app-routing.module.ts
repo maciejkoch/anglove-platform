@@ -18,8 +18,8 @@ const routes: Routes = [
     loadChildren: './login/login.module#LoginPageModule'
   },
   {
-    path: 'list',
-    loadChildren: './list/list.module#ListPageModule',
+    path: 'topic/:id',
+    loadChildren: './topic/topic.module#TopicPageModule',
     canActivate: [AuthenticationGuardService]
   }
 ];
