@@ -1,22 +1,29 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Login
+      <img class="logo" alt="logo" src="assets/anglove-mini.png">
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  Login page
-  <form [formGroup]="form" (ngSubmit)="login(form.value)">
-    <ion-item>
-      <ion-input required type="text" placeholder="Login" formControlName="email"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input required type="password" placeholder="Password" formControlName="password"></ion-input>
-    </ion-item>
-    <ion-button type="submit" [disabled]="!form.valid">Login</ion-button>
-  </form>
-  <span *ngIf="authenticationFailed"> Wrong login or password</span>
+
+  <ion-row justify-content-center>
+    <ion-col size-lg="4">
+      <form [formGroup]="form" (ngSubmit)="login(form.value)" (keyup.enter)="login(form.value)"> 
+        <ion-item>
+          <ion-input required type="text" placeholder="E-mail" formControlName="email"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input required type="password" placeholder="Password" formControlName="password"></ion-input>
+        </ion-item>
+        <ion-button type="submit" [disabled]="!form.valid">
+          Login
+          <ion-spinner *ngIf="isLoading"></ion-spinner>
+        </ion-button>
+      </form>
+      <span *ngIf="authenticationFailed" danger> Wrong login or password</span>
+    </ion-col>
+  </ion-row>
   
 </ion-content>

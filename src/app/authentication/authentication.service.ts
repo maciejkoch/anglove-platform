@@ -3,13 +3,18 @@ import {AngularFireAuth} from 'angularfire2/auth';
 import {Router} from '@angular/router';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs';
+import { Thumbnail } from '@ionic/angular';
 
 @Injectable()
 export class AuthenticationService {
-  public user: Observable<firebase.User>;
+  private firebaseUser: Observable<firebase.User>;
+
+  get user(): Observable<firebase.User> {
+    return this.firebaseUser;
+  }
 
   constructor(private afAuth: AngularFireAuth, private router: Router) {
-    this.user = afAuth.authState;
+    this.firebaseUser = afAuth.authState;
   }
 
   login(user): any {

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -11,27 +10,34 @@ import { AuthenticationService } from '../authentication/authentication.service'
 })
 export class LoginPage {
 
-  user: Observable<firebase.User>;
   form: FormGroup;
-  email:string = '';
-  password:string = '';
-  authenticationFailed:boolean = false;
+  email: string = '';
+  password: string = '';
+  authenticationFailed: boolean = false;
+  isLoading: boolean = false;
 
-  constructor(public afAuth: AngularFireAuth, private fb: FormBuilder, private authenticationService: AuthenticationService) {
-    this.user = afAuth.authState;
-
+  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private menuCtrl: MenuController) {
     this.form = fb.group({
       'email' : [null, Validators.required],
       'password' : [null, Validators.required],
     });
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
+    //TODO doesn't work on refresh
+    this.menuCtrl.enable(false);
   }
 
-  login(user) {
+  ionViewDidLeave() {
+    this.menuCtrl.enable(true);
+  }
+
+  login(user: { email: string, password: string }) {
+    this.isLoading = true;
+    this.authenticationFailed = false;
     this.authenticationService.login(user)
     .catch(() => {
+      this.isLoading = false
       this.authenticationFailed = true;
     });
   }
