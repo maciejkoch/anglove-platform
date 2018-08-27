@@ -31,10 +31,9 @@ export class TopicsService {
   getItems(): Observable<Topic[]> {
     return this.items.snapshotChanges().pipe(
       map((actions) => {
-        return actions.map((a) => {
-          let data = a.payload.doc.data() as Topic;
-          data.id = a.payload.doc.id;
-          return data;
+        return actions.map((action) => {
+          const topic: Topic = action.payload.doc.data();
+          return {...topic, id: action.payload.doc.id};
         });
       })
     )
@@ -43,9 +42,8 @@ export class TopicsService {
   getItem(id: string): Observable<Topic> {
     return this.db.doc<Topic>(`topics/${id}`).snapshotChanges().pipe(
       map(action => {
-        let data = action.payload.data() as Topic;
-        data.id = action.payload.id;
-        return data;
+        const topic: Topic = action.payload.data() as Topic;
+        return { ...topic, id: action.payload.id} ;
       })
     )
   }
