@@ -3,15 +3,13 @@ import { AlertController, NavController } from '@ionic/angular';
 import { TopicsService } from './topics.service';
 import { Topic } from './topic.modet';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-topics-list',
+  templateUrl: 'topics-list.page.html',
+  styleUrls: ['topics-list.page.scss'],
 })
-export class HomePage {
+export class TopicsListPage {
 
   items: Observable<Topic[]>;
 
@@ -42,7 +40,6 @@ export class HomePage {
   }
 
   navigate(item: Topic) {
-    // this.router.navigate(['/topic', item.id]);
     this.navCtrl.goForward(`/topic/${item.id}`);
   }
 

@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { TopicPage } from './topic.page';
-import { TopicsService } from '../home/topics.service';
+import { TopicsService } from '../topics-list/topics.service';
 
 @NgModule({
   imports: [

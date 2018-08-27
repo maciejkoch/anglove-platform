@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { TopicsService } from '../home/topics.service';
 import { Observable } from 'rxjs';
-import { Topic } from '../home/topic.modet';
 import { ActivatedRoute } from '@angular/router';
+import { Topic } from '../topics-list/topic.modet';
+import { TopicsService } from '../topics-list/topics.service';
 
 @Component({
   selector: 'app-topic',

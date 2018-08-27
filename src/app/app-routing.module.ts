@@ -5,12 +5,12 @@ import { AuthenticationGuardService } from './authentication/authentication-guar
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'topics',
     pathMatch: 'full'
   },
   {
-    path: 'home',
-    loadChildren: './home/home.module#HomePageModule',
+    path: 'topics',
+    loadChildren: './topics-list/topics-list.module#TopicsListPageModule',
     canActivate: [AuthenticationGuardService]
   },
   {

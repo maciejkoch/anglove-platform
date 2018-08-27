@@ -10,9 +10,13 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-card *ngFor="let item of items | async" (click)="navigate(item)"> 
-    <h1>{{ item.title }}</h1>
-  </ion-card>
+  <ion-list>
+    <ion-card class="clickable" *ngFor="let item of items | async" (click)="navigate(item)">
+      <ion-label>
+        <h2>{{ item.title }}</h2>
+      </ion-label>
+    </ion-card>
+  </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="presentNewTopicAlert()">
