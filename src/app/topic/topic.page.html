@@ -6,6 +6,12 @@
     <ion-title>
       Topic
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" fill="solid" (click)="toggleEdit()">
+        <ion-icon *ngIf="edit" name="eye"></ion-icon>
+        <ion-icon *ngIf="!edit" name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -15,13 +21,15 @@
   <ion-row>
     <ion-col size-xl="2" size-lg="3" size-md="4" size-sm="6" size-xs="12" *ngFor="let item of item?.items">
       <ion-card class="clickable">
-        <ion-img [src]="item.image"></ion-img>
+        <ion-img *ngIf="item.image" [src]="item.image"></ion-img>
             
         <ion-card-content>
-          <ion-card-title>{{ item.title }}</ion-card-title>
-            
-          <p>{{ item.description }}</p>
+          <ion-card-title >{{ item.title ? item.title : item.url }}</ion-card-title>
+          <p *ngIf="item.description">{{ item.description }}</p>
         </ion-card-content>
+        <ion-item *ngIf="edit">
+          <ion-button *ngIf="!item.edit" fill="outline" slot="end" (click)="delete(item)">Delete</ion-button>
+        </ion-item>
       </ion-card>
     </ion-col>
     
