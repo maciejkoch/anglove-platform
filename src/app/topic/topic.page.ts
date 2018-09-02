@@ -1,36 +1,51 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { finalize, tap, catchError } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, flatMap, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { Topic } from '../topics-list/topic.modet';
 import { TopicsService } from '../topics-list/topics.service';
-import { AlertController, PopoverController } from '@ionic/angular';
+import { AlertController, PopoverController, NavController } from '@ionic/angular';
 import { TopicItem } from '../topics-list/topic-item.model';
 import { LinkPreviewService } from './link-preview.service';
 import { guid } from '../helpers/guid-generator.helper';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-topic',
   templateUrl: 'topic.page.html',
-  styleUrls: ['topic.page.scss']
+  styleUrls: ['topic.page.scss'],
 })
 export class TopicPage {
 
+  form: FormGroup;
   item: Topic;
   edit: boolean = true;
 
-  constructor(private route: ActivatedRoute, private alertController: AlertController, private popoverController: PopoverController, private topicsService: TopicsService, private linkPreviewService: LinkPreviewService) {}
+  constructor(fb: FormBuilder, private route: ActivatedRoute, private navCtrl: NavController, private alertController: AlertController, private popoverController: PopoverController, private topicsService: TopicsService, private linkPreviewService: LinkPreviewService) {
+    this.form = fb.group({
+      title: ['', Validators.required],
+      description: ['']
+    })
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       if (params && params.id) {
-        this.topicsService.getItem(params.id).subscribe(item => this.item = item);
+        this.topicsService.getItem(params.id).subscribe(item => {
+          this.item = item;
+          this.form.patchValue(item, { emitEvent: false });
+        });
       }
     });
-  }
 
-  toggleEdit(): void {
-    this.edit = !this.edit;
+    this.form.valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(250)
+    )
+    .subscribe(changes => {
+      const updatedItem = Object.assign<Topic, any>(this.item, changes);
+      this.topicsService.updateItem(updatedItem);
+    });
   }
 
   async presentNewUrlAlert(): Promise<void> {
@@ -53,12 +68,27 @@ export class TopicPage {
     await alert.present();
   }
 
-  async delete(topicItem: TopicItem): Promise<void> {
+  async delete(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Are you sure?',
       buttons: [{
         text: 'Ok',
-        handler: () => this.removeItemAndSave(this.item, topicItem)
+        handler: () => this.deleteAndSave().subscribe()
+      }, {
+        text: 'Cancel',
+        role: 'cancel'
+      }]
+    })
+
+    await alert.present();
+  }
+
+  async deleteItem(topicItem: TopicItem): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Are you sure?',
+      buttons: [{
+        text: 'Ok',
+        handler: () => this.deleteItemAndSave(this.item, topicItem)
       }, {
         text: 'Cancel',
         role: 'cancel'
@@ -76,6 +106,12 @@ export class TopicPage {
     )
   }
 
+  private deleteAndSave(): Observable<boolean> {
+    return this.topicsService.deleteItem(this.item).pipe(
+      flatMap(() => this.navCtrl.goBack('/topics'))
+    );
+  }
+
   private addItemAndSave(item: Topic, topicItem: TopicItem): Observable<Topic> {
     const newItem = {...topicItem, id: guid() };
     const topicItems = this.item.items ? [...this.item.items, newItem ] : [newItem]
@@ -83,7 +119,7 @@ export class TopicPage {
     return this.topicsService.updateItem(updatedItem);
   }
 
-  private removeItemAndSave(item: Topic, topicItem: TopicItem): Observable<Topic> {
+  private deleteItemAndSave(item: Topic, topicItem: TopicItem): Observable<Topic> {
     const topicItems = this.item.items.filter(item => item.id !== topicItem.id)
     const updatedItem = {...item, items: topicItems};
     return this.topicsService.updateItem(updatedItem);

@@ -13,6 +13,7 @@ export class TopicsService {
   }
 
   addItem(item: Topic): Observable<Topic> {
+    item = this.touch(item);
     const promise: Promise<Topic> = this.items.add(item).then((document: DocumentReference) => {
       return {...item, id: document.id}
     });
@@ -20,12 +21,14 @@ export class TopicsService {
     return from(promise);
   }
 
-  updateItem(item: Topic ): Observable<any>  {
-    return from(this.getFirestoreDocument(item.id).update(item));
+  updateItem(item: Topic ): Observable<Topic>  {
+    item = this.touch(item);
+    const promise = this.getFirestoreDocument(item.id).update(item).then(() => item);
+    return from(promise);
   }
 
-  deleteItem(item: Topic ): Observable<any>  {
-    return from(this.getFirestoreDocument(item.id).delete());
+  deleteItem(item: Topic ): Observable<boolean>  {
+    return from(this.getFirestoreDocument(item.id).delete().then(() => true));
   }
 
   getItems(): Observable<Topic[]> {
@@ -40,7 +43,7 @@ export class TopicsService {
   }
 
   getItem(id: string): Observable<Topic> {
-    return this.db.doc<Topic>(`topics/${id}`).snapshotChanges().pipe(
+    return this.getFirestoreDocument(id).snapshotChanges().pipe(
       map(action => {
         const topic: Topic = action.payload.data() as Topic;
         return { ...topic, id: action.payload.id} ;
@@ -50,5 +53,9 @@ export class TopicsService {
 
   private getFirestoreDocument(id: string): AngularFirestoreDocument {
     return this.db.doc<Topic>(`topics/${id}`);
+  }
+
+  private touch(item: Topic): Topic {
+    return {...item, lastUpdate: Date.now() };
   }
 }

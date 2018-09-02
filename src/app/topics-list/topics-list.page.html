@@ -10,12 +10,21 @@
 </ion-header>
 
 <ion-content padding>
+  
   <ion-list>
-    <ion-card class="clickable" *ngFor="let item of items | async" (click)="navigate(item)">
-      <ion-label>
-        <h2>{{ item.title }}</h2>
-      </ion-label>
-    </ion-card>
+    <ion-item *ngFor="let item of items | async">
+      <ion-card class="topic-list-item clickable" (click)="navigate(item)">
+        <div class="topic-list-item__main">
+          <h2>{{ item.title }}</h2>
+          <p *ngIf="item.description">{{ item.description }}</p>
+        </div>
+        
+        <ion-note class="topic-list-item__info">
+          {{ item.lastUpdate | date: 'medium' }}
+        </ion-note>
+      </ion-card>
+    </ion-item>
+    
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

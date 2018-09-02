@@ -7,17 +7,23 @@
       Topic
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button color="primary" fill="solid" (click)="toggleEdit()">
-        <ion-icon *ngIf="edit" name="eye"></ion-icon>
-        <ion-icon *ngIf="!edit" name="settings"></ion-icon>
-      </ion-button>
+      <ion-button *ngIf="edit" color="primary" fill="solid" (click)="delete()">Remove</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <h1> {{ item?.title }}</h1>
-
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input formControlName="title" [readonly]="!edit"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-input formControlName="description" [readonly]="!edit"></ion-input>
+    </ion-item>
+  </form>
+  
   <ion-row>
     <ion-col size-xl="2" size-lg="3" size-md="4" size-sm="6" size-xs="12" *ngFor="let item of item?.items">
       <ion-card class="clickable">
@@ -28,14 +34,14 @@
           <p *ngIf="item.description">{{ item.description }}</p>
         </ion-card-content>
         <ion-item *ngIf="edit">
-          <ion-button *ngIf="!item.edit" fill="outline" slot="end" (click)="delete(item)">Delete</ion-button>
+          <ion-button *ngIf="!item.edit" fill="outline" slot="end" (click)="deleteItem(item)">Delete</ion-button>
         </ion-item>
       </ion-card>
     </ion-col>
     
   </ion-row>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="edit" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="presentNewUrlAlert()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
