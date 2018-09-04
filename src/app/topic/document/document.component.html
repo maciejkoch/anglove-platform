@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Document
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item>
+    <ion-label stacked>Upload</ion-label>
+    <input type="file" (change)="upload($event)" accept=".png,.jpg,.pdf">
+    <progress max="100" [value]="(uploadProgress$ | async)"></progress>
+  </ion-item>
+  <ion-item>
+    <ion-label stacked>Download url</ion-label>
+    <a href="{{ downloadUrl$ | async }}">Download</a>
+  </ion-item>
+</ion-content>

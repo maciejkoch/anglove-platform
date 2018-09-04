@@ -14,6 +14,7 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFirestore, AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AuthenticationGuardService } from './authentication/authentication-guard.service';
 import { AuthenticationService } from './authentication/authentication.service';
 
@@ -26,6 +27,7 @@ import { AuthenticationService } from './authentication/authentication.service';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule.enablePersistence(),
+    AngularFireStorageModule,
     AppRoutingModule,
     HttpClientModule
   ],

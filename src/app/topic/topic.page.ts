@@ -4,11 +4,12 @@ import { distinctUntilChanged, debounceTime, flatMap, tap } from 'rxjs/operators
 import { ActivatedRoute } from '@angular/router';
 import { Topic } from '../topics-list/topic.modet';
 import { TopicsService } from '../topics-list/topics.service';
-import { AlertController, PopoverController, NavController } from '@ionic/angular';
+import { AlertController, PopoverController, NavController, ModalController } from '@ionic/angular';
 import { TopicItem } from '../topics-list/topic-item.model';
 import { LinkPreviewService } from './link-preview.service';
 import { guid } from '../helpers/guid-generator.helper';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DocumentComponent } from './document/document.component';
 
 @Component({
   selector: 'app-topic',
@@ -21,7 +22,7 @@ export class TopicPage {
   item: Topic;
   edit: boolean = true;
 
-  constructor(fb: FormBuilder, private route: ActivatedRoute, private navCtrl: NavController, private alertController: AlertController, private popoverController: PopoverController, private topicsService: TopicsService, private linkPreviewService: LinkPreviewService) {
+  constructor(fb: FormBuilder, private route: ActivatedRoute, private navCtrl: NavController, private alertController: AlertController, private modalController: ModalController, private topicsService: TopicsService, private linkPreviewService: LinkPreviewService) {
     this.form = fb.group({
       title: ['', Validators.required],
       description: ['']
@@ -66,6 +67,14 @@ export class TopicPage {
     })
 
     await alert.present();
+  }
+
+  async openDocumentModal() {
+    const modal = await this.modalController.create({
+      component: DocumentComponent,
+      componentProps: { value: 123 }
+    });
+    return await modal.present();
   }
 
   async delete(): Promise<void> {

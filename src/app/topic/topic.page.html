@@ -42,8 +42,12 @@
   </ion-row>
 
   <ion-fab *ngIf="edit" vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="presentNewUrlAlert()">
+    <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="presentNewUrlAlert()"><ion-icon name="link"></ion-icon></ion-fab-button>
+      <ion-fab-button (click)="openDocumentModal()"><ion-icon name="document"></ion-icon></ion-fab-button>
+    </ion-fab-list>
   </ion-fab>
 </ion-content>

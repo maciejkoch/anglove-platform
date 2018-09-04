@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { TopicPage } from './topic.page';
 import { TopicsService } from '../topics-list/topics.service';
 import { LinkPreviewService } from './link-preview.service';
+import { DocumentComponent } from './document/document.component';
 
 @NgModule({
   imports: [
@@ -21,10 +22,13 @@ import { LinkPreviewService } from './link-preview.service';
       }
     ])
   ],
-  declarations: [TopicPage],
+  declarations: [TopicPage, DocumentComponent ],
   providers: [
     TopicsService,
     LinkPreviewService
+  ],
+  entryComponents: [
+    DocumentComponent
   ]
 })
 export class TopicPageModule {}
