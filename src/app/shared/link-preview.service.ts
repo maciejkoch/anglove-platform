@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { TopicItem } from '../topics-list/topic-item.model';
 import { Observable } from 'rxjs';
+import { LinkPreview } from './link-preview.model';
 
 @Injectable()
 export class LinkPreviewService {
@@ -9,10 +9,10 @@ export class LinkPreviewService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getLinkPreview(url: string): Observable<TopicItem> {
+  getLinkPreview(url: string): Observable<LinkPreview> {
     let params: HttpParams = new HttpParams();
     params = params.set('key', this.KEY);
     params = params.set('q', url);
-    return this.httpClient.get<TopicItem>('https://api.linkpreview.net', { params })
+    return this.httpClient.get<LinkPreview>('https://api.linkpreview.net', { params })
   }
 }

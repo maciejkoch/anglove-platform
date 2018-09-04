@@ -4,14 +4,14 @@ import { distinctUntilChanged, debounceTime, flatMap, tap } from 'rxjs/operators
 import { ActivatedRoute } from '@angular/router';
 import { Topic } from '../topics-list/topic.model';
 import { TopicsService } from '../topics-list/topics.service';
-import { AlertController, PopoverController, NavController, ModalController } from '@ionic/angular';
-import { TopicItem } from '../topics-list/topic-item.model';
-import { LinkPreviewService } from './link-preview.service';
-import { guid } from '../helpers/guid-generator.helper';
+import { AlertController, NavController, ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DocumentComponent } from './document/document.component';
 import { DocumentService } from './document/document.service';
 import { Document } from './document/document.model';
+import { Link } from './link/link.model';
+import { LinkComponent } from './link/link.component';
+import { LinkService } from './link/link.service';
 
 @Component({
   selector: 'app-topic',
@@ -24,9 +24,10 @@ export class TopicPage {
   item: Topic;
   edit: boolean = true;
 
+  links$: Observable<Link[]>
   documents$: Observable<Document[]>
 
-  constructor(fb: FormBuilder, private route: ActivatedRoute, private navCtrl: NavController, private alertController: AlertController, private modalController: ModalController, private topicsService: TopicsService, private documentSevice: DocumentService, private linkPreviewService: LinkPreviewService) {
+  constructor(fb: FormBuilder, private route: ActivatedRoute, private navCtrl: NavController, private alertController: AlertController, private modalController: ModalController, private topicsService: TopicsService, private documentSevice: DocumentService, private linkService: LinkService) {
     this.form = fb.group({
       title: ['', Validators.required],
       description: ['']
@@ -42,7 +43,7 @@ export class TopicPage {
         });
 
         this.documents$ = this.documentSevice.getItemsByQuery('topicId', params.id);
-        // this.documents$ = this.documentSevice.getItems();
+        this.links$ = this.linkService.getItemsByQuery('topicId', params.id);
       }
     });
 
@@ -56,29 +57,17 @@ export class TopicPage {
     });
   }
 
-  async presentNewUrlAlert(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'New url',
-      inputs: [{
-        name: 'url',
-        type: 'text',
-        placeholder: 'Url'
-      }],
-      buttons: [{
-        text: 'Ok',
-        handler: data => this.addTopicItem(this.item, data)
-      }, {
-        text: 'Cancel',
-        role: 'cancel'
-      }]
-    })
-
-    await alert.present();
-  }
-
   async openDocumentModal(item: Document) {
     const modal = await this.modalController.create({
       component: DocumentComponent,
+      componentProps: { topicId: this.item.id, item }
+    });
+    return await modal.present();
+  }
+
+  async openLinkModal(item: Link) {
+    const modal = await this.modalController.create({
+      component: LinkComponent,
       componentProps: { topicId: this.item.id, item }
     });
     return await modal.present();
@@ -99,46 +88,9 @@ export class TopicPage {
     await alert.present();
   }
 
-  async deleteItem(topicItem: TopicItem): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Are you sure?',
-      buttons: [{
-        text: 'Ok',
-        handler: () => this.deleteItemAndSave(this.item, topicItem)
-      }, {
-        text: 'Cancel',
-        role: 'cancel'
-      }]
-    })
-
-    await alert.present();
-  }
-
-  private addTopicItem(item: Topic, topicItem: TopicItem) {
-    this.linkPreviewService.getLinkPreview(topicItem.url)
-    .subscribe(
-      (preview: TopicItem) => this.addItemAndSave(item, preview),
-      () => this.addItemAndSave(item, topicItem)
-    )
-  }
-
   private deleteAndSave(): Observable<boolean> {
     return this.topicsService.deleteItem(this.item.id).pipe(
       flatMap(() => this.navCtrl.goBack('/topics'))
     );
   }
-
-  private addItemAndSave(item: Topic, topicItem: TopicItem): Observable<Topic> {
-    const newItem = {...topicItem, id: guid() };
-    const topicItems = this.item.items ? [...this.item.items, newItem ] : [newItem]
-    const updatedItem = {...item, items: topicItems};
-    return this.topicsService.updateItem(updatedItem);
-  }
-
-  private deleteItemAndSave(item: Topic, topicItem: TopicItem): Observable<Topic> {
-    const topicItems = this.item.items.filter(item => item.id !== topicItem.id)
-    const updatedItem = {...item, items: topicItems};
-    return this.topicsService.updateItem(updatedItem);
-  }
-
 }

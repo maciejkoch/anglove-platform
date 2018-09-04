@@ -23,46 +23,50 @@
       <ion-input formControlName="description" [readonly]="!edit"></ion-input>
     </ion-item>
   </form>
-  
+
   <ion-row>
-    <ion-col size-xl="2" size-lg="3" size-md="4" size-sm="6" size-xs="12" *ngFor="let item of item?.items">
+    <ion-col size-xl="2" size-lg="3" size-md="4" size-sm="6" size-xs="12" *ngFor="let item of links$ | async">
       <ion-card class="clickable">
         <ion-img *ngIf="item.image" [src]="item.image"></ion-img>
-            
+
         <ion-card-content>
-          <ion-card-title >{{ item.title ? item.title : item.url }}</ion-card-title>
+          <ion-card-title>{{ item.title ? item.title : item.url }}</ion-card-title>
           <p *ngIf="item.description">{{ item.description }}</p>
         </ion-card-content>
         <ion-item *ngIf="edit">
-          <ion-button fill="outline" slot="end" (click)="deleteItem(item)">Delete</ion-button>
+          <ion-button fill="outline" slot="end" (click)="openLinkModal(item)">Edit</ion-button>
         </ion-item>
       </ion-card>
     </ion-col>
-    
+
   </ion-row>
   <ion-row>
-      <ion-col size-xl="2" size-lg="3" size-md="4" size-sm="6" size-xs="12" *ngFor="let item of documents$ | async">
-        <ion-card class="clickable">
-          <ion-img *ngIf="item.file && item.file.type.startsWith('image')" [src]="item.file.downloadUrl"></ion-img>
-          <ion-card-content>
-            <ion-card-title >{{ item.title ? item.title : item.url }}</ion-card-title>
-            <p *ngIf="item.description">{{ item.description }}</p>
-          </ion-card-content>
-          <ion-item *ngIf="edit">
-            <ion-button fill="outline" slot="end" (click)="openDocumentModal(item)">Edit</ion-button>
-          </ion-item>
-        </ion-card>
-      </ion-col>
-      
-    </ion-row>
+    <ion-col size-xl="2" size-lg="3" size-md="4" size-sm="6" size-xs="12" *ngFor="let item of documents$ | async">
+      <ion-card class="clickable">
+        <ion-img *ngIf="item.file && item.file.type.startsWith('image')" [src]="item.file.downloadUrl"></ion-img>
+        <ion-card-content>
+          <ion-card-title>{{ item.title ? item.title : item.url }}</ion-card-title>
+          <p *ngIf="item.description">{{ item.description }}</p>
+        </ion-card-content>
+        <ion-item *ngIf="edit">
+          <ion-button fill="outline" slot="end" (click)="openDocumentModal(item)">Edit</ion-button>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+
+  </ion-row>
 
   <ion-fab *ngIf="edit" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
-      <ion-fab-button (click)="presentNewUrlAlert()"><ion-icon name="link"></ion-icon></ion-fab-button>
-      <ion-fab-button (click)="openDocumentModal()"><ion-icon name="document"></ion-icon></ion-fab-button>
+      <ion-fab-button (click)="openLinkModal()">
+        <ion-icon name="link"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="openDocumentModal()">
+        <ion-icon name="document"></ion-icon>
+      </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
 </ion-content>
