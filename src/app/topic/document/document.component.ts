@@ -19,6 +19,7 @@ export class DocumentComponent {
   form: FormGroup;
 
   isUploadInProgress: boolean = false;
+  submitAttempt: boolean = false;
   
   uploadedFile: DocumentFile;
   topicId: string;
@@ -78,18 +79,21 @@ export class DocumentComponent {
   }
 
   save() {
-    const item = {
-      ...this.form.getRawValue(),
-      topicId: this.topicId,
-      file: this.uploadedFile  
-    };
-
-    if (this.itemId) {
-      item.id = this.itemId;
+    this.submitAttempt = true;
+    if (this.form.valid && this.uploadedFile) {
+      const item = {
+        ...this.form.getRawValue(),
+        topicId: this.topicId,
+        file: this.uploadedFile  
+      };
+  
+      if (this.itemId) {
+        item.id = this.itemId;
+      }
+  
+      const save$ = item.id ? this.documentService.updateItem(item) : this.documentService.addItem(item);
+      save$.subscribe(() => this.close());
     }
-
-    const save$ = item.id ? this.documentService.updateItem(item) : this.documentService.addItem(item);
-    save$.subscribe(() => this.close());
   }
 
   close() {

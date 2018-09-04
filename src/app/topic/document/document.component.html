@@ -12,6 +12,9 @@
       <ion-label position="floating">Title</ion-label>
       <ion-input formControlName="title"></ion-input>
     </ion-item>
+    <ion-item *ngIf="!form.controls.title.valid  && (form.controls.title.dirty || submitAttempt)">
+      <p class="validation">Required</p>
+    </ion-item>
     <ion-item>
       <ion-label position="floating">Description</ion-label>
       <ion-input formControlName="description"></ion-input>
@@ -26,6 +29,9 @@
     <input #file type="file" class="hidden-input-file" (change)="upload($event)" accept=".png,.jpg,.pdf">
     <ion-spinner *ngIf="isUploadInProgress"></ion-spinner>
     <a *ngIf="!isUploadInProgress && uploadedFile" [href]="uploadedFile.downloadUrl" target="_blank">Preview</a>
+  </ion-item>
+  <ion-item *ngIf="!uploadedFile && submitAttempt">
+    <p class="validation">Required</p>
   </ion-item>
 </ion-content>
 <ion-footer>
