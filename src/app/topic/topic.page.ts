@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, debounceTime, flatMap, tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { Topic } from '../topics-list/topic.modet';
+import { Topic } from '../topics-list/topic.model';
 import { TopicsService } from '../topics-list/topics.service';
 import { AlertController, PopoverController, NavController, ModalController } from '@ionic/angular';
 import { TopicItem } from '../topics-list/topic-item.model';
@@ -10,6 +10,8 @@ import { LinkPreviewService } from './link-preview.service';
 import { guid } from '../helpers/guid-generator.helper';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DocumentComponent } from './document/document.component';
+import { DocumentService } from './document/document.service';
+import { Document } from './document/document.model';
 
 @Component({
   selector: 'app-topic',
@@ -22,7 +24,9 @@ export class TopicPage {
   item: Topic;
   edit: boolean = true;
 
-  constructor(fb: FormBuilder, private route: ActivatedRoute, private navCtrl: NavController, private alertController: AlertController, private modalController: ModalController, private topicsService: TopicsService, private linkPreviewService: LinkPreviewService) {
+  documents$: Observable<Document[]>
+
+  constructor(fb: FormBuilder, private route: ActivatedRoute, private navCtrl: NavController, private alertController: AlertController, private modalController: ModalController, private topicsService: TopicsService, private documentSevice: DocumentService, private linkPreviewService: LinkPreviewService) {
     this.form = fb.group({
       title: ['', Validators.required],
       description: ['']
@@ -36,6 +40,9 @@ export class TopicPage {
           this.item = item;
           this.form.patchValue(item, { emitEvent: false });
         });
+
+        this.documents$ = this.documentSevice.getItemsByQuery('topicId', params.id);
+        // this.documents$ = this.documentSevice.getItems();
       }
     });
 
@@ -69,10 +76,10 @@ export class TopicPage {
     await alert.present();
   }
 
-  async openDocumentModal() {
+  async openDocumentModal(item: Document) {
     const modal = await this.modalController.create({
       component: DocumentComponent,
-      componentProps: { value: 123 }
+      componentProps: { topicId: this.item.id, item }
     });
     return await modal.present();
   }
@@ -116,7 +123,7 @@ export class TopicPage {
   }
 
   private deleteAndSave(): Observable<boolean> {
-    return this.topicsService.deleteItem(this.item).pipe(
+    return this.topicsService.deleteItem(this.item.id).pipe(
       flatMap(() => this.navCtrl.goBack('/topics'))
     );
   }

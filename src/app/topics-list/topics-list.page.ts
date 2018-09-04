@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
 import { TopicsService } from './topics.service';
-import { Topic } from './topic.modet';
+import { Topic } from './topic.model';
 import { Observable } from 'rxjs';
 
 @Component({

@@ -7,13 +7,34 @@
 </ion-header>
 
 <ion-content padding>
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input formControlName="title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-input formControlName="description"></ion-input>
+    </ion-item>
+  </form>
   <ion-item>
-    <ion-label stacked>Upload</ion-label>
-    <input type="file" (change)="upload($event)" accept=".png,.jpg,.pdf">
-    <progress max="100" [value]="(uploadProgress$ | async)"></progress>
-  </ion-item>
-  <ion-item>
-    <ion-label stacked>Download url</ion-label>
-    <a href="{{ downloadUrl$ | async }}">Download</a>
+    <ion-label stacked>
+      <ion-button (click)="file.click()">
+        <ng-container>{{ uploadedFile ? uploadedFile.name : 'Choose file' }} </ng-container>
+      </ion-button>
+    </ion-label>
+    <input #file type="file" class="hidden-input-file" (change)="upload($event)" accept=".png,.jpg,.pdf">
+    <ion-spinner *ngIf="isUploadInProgress"></ion-spinner>
+    <a *ngIf="!isUploadInProgress && uploadedFile" [href]="uploadedFile.downloadUrl" target="_blank">Preview</a>
   </ion-item>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button (click)="save()">Save</ion-button>
+    <ion-button (click)="close()">Cancel</ion-button>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="itemId" (click)="delete()">Delete</ion-button>
+    </ion-buttons>
+    
+  </ion-toolbar>
+</ion-footer>

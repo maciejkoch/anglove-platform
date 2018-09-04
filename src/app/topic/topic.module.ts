@@ -8,6 +8,7 @@ import { TopicPage } from './topic.page';
 import { TopicsService } from '../topics-list/topics.service';
 import { LinkPreviewService } from './link-preview.service';
 import { DocumentComponent } from './document/document.component';
+import { DocumentService } from './document/document.service';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { DocumentComponent } from './document/document.component';
   declarations: [TopicPage, DocumentComponent ],
   providers: [
     TopicsService,
-    LinkPreviewService
+    LinkPreviewService,
+    DocumentService
   ],
   entryComponents: [
     DocumentComponent
