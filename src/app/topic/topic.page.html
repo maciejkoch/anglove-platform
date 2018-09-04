@@ -43,6 +43,7 @@
   <ion-row>
       <ion-col size-xl="2" size-lg="3" size-md="4" size-sm="6" size-xs="12" *ngFor="let item of documents$ | async">
         <ion-card class="clickable">
+          <ion-img *ngIf="item.file && item.file.type.startsWith('image')" [src]="item.file.downloadUrl"></ion-img>
           <ion-card-content>
             <ion-card-title >{{ item.title ? item.title : item.url }}</ion-card-title>
             <p *ngIf="item.description">{{ item.description }}</p>

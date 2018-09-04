@@ -11,4 +11,6 @@ export interface DocumentFile {
   id: string,
   name: string,
   downloadUrl: string;
+  type: string;
+  size: number;
 }

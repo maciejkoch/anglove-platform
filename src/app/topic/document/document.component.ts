@@ -46,7 +46,7 @@ export class DocumentComponent {
 
     const id = guid();
     const file = event.target.files[0];
-    const filePath = `topics/${id}`;
+    const filePath = `${id}`;
 
     this.storage.upload(filePath, file).snapshotChanges().pipe(
       finalize(() => {
@@ -55,7 +55,9 @@ export class DocumentComponent {
           this.uploadedFile = {
             id,
             name: file.name,
-            downloadUrl
+            downloadUrl,
+            type: file.type,
+            size: file.size
           }
         });
       })
